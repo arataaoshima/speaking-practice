@@ -1,0 +1,115 @@
+<div class="form-wrapper">
+  <%= form_tag("/check/#{@quiz.id}") do %>
+  <div class="question-content">
+    <%= @quiz.content %>
+    <input name="answer" id="target" class="form-control q-forms">
+  </div>
+  <div class="question">
+  <input type="submit" class="btn btn-outline-secondary">
+  </div>
+  <% end %>
+</div>
+<!--    from now copied              -->
+<div class="button-wrapper">
+  <button id="start-btn" class="btn btn-outline-success">Speaking Start</button>
+  <button id="stop-btn" class="btn btn-outline-danger">Speaking Stop</button>
+  <button id="delete-btn" class="btn btn-outline-primary">やりなおす</button>
+</div>
+<!--<div id="result-div"></div>  -->
+
+
+
+<script>
+  var startBtn = document.querySelector('#start-btn');
+  var stopBtn = document.querySelector('#stop-btn');
+  var dltBtn = document.querySelector('#delete-btn')
+  
+  
+  // var resultDiv = document.querySelector('#result-div');
+
+  SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+  let recognition = new SpeechRecognition();
+
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  //recognition.continuous = true;
+
+  let finalTranscript = ''; // 確定した(黒の)認識結果
+
+  recognition.onresult = (event) => {
+    let interimTranscript = ''; // 暫定(灰色)の認識結果
+    
+   
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      let transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      } else {
+        interimTranscript = transcript;
+      }}
+    
+   // resultDiv.innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</i>';
+    document.getElementById( "target" ).value = finalTranscript + interimTranscript ;
+     
+  }
+
+  startBtn.onclick = () => {
+    recognition.start();
+  }
+  
+  stopBtn.onclick = () => {
+    recognition.stop();
+  }
+  
+  dltBtn.onclick = () => {
+     document.getElementById( "target" ).value = "";
+     finalTranscript = ""; //中身をゼロにする
+     interimTranscript = "";　//中身をゼロにする
+  }　
+</script>
+
+<!--    from now script        
+<script>
+  var startBtn = document.querySelector('#start-btn');
+  var stopBtn = document.querySelector('#stop-btn');
+  var dltBtn = document.querySelector('#delete-btn')
+  
+  
+  // var resultDiv = document.querySelector('#result-div');
+
+  SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+  let recognition = new SpeechRecognition();
+
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  //recognition.continuous = true;
+
+  let finalTranscript = ''; // 確定した(黒の)認識結果
+
+  recognition.onresult = (event) => {
+    let interimTranscript = ''; // 暫定(灰色)の認識結果
+    
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      let transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      } else {
+        interimTranscript = transcript;
+      }
+    }
+   // resultDiv.innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</i>';
+    document.getElementById( "target" ).value = finalTranscript + interimTranscript ;
+  }
+
+  startBtn.onclick = () => {
+    recognition.start();
+  }
+  
+  stopBtn.onclick = () => {
+    recognition.stop();
+  }
+  
+  dltBtn.onclick = () => {
+     document.getElementById( "target" ).value = "";
+  }
+</script>
